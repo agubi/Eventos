@@ -1,0 +1,115 @@
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
+import org.bukkit.Material;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Premios extends JavaPlugin
+  implements Listener
+{
+  public void onEnable()
+  {
+    PluginManager pm = getServer().getPluginManager();
+    pm.registerEvents(this, this);
+    
+    ItemStack enderBow = new ItemStack(Material.BOW);
+    enderBow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+    ItemMeta enderBowMeta = enderBow.getItemMeta();
+    enderBowMeta.setLore(Arrays.asList(new String[] { "Enderball" }));
+    enderBowMeta.setDisplayName("ArcoEnder");
+    enderBow.setItemMeta(enderBowMeta);
+    
+    ItemStack witherBow = new ItemStack(Material.BOW);
+    witherBow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+    ItemMeta witherBowMeta = witherBow.getItemMeta();
+    witherBowMeta.setLore(Arrays.asList(new String[] { "TNT" }));
+    witherBowMeta.setDisplayName("ArcoCreeper");
+    witherBow.setItemMeta(witherBowMeta);
+    
+    ItemStack s1 = new ItemStack(Material.DIAMOND_SWORD);
+    s1.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+    ItemMeta s1im = s1.getItemMeta();
+    s1im.setLore(Arrays.asList(new String[] { "Â§6Espada del victorioso! Â§rÂ§4Â§oLevel 1"" }));
+    s1im.setDisplayName("Â§cPremio de Evento");
+    s1.setItemMeta(s1im);
+    
+    ItemStack s2 = new ItemStack(Material.DIAMON_SWORD);
+    s2.addEnchantment(Enchantment.KNOCKBACK, 1);
+    s2.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+    s2.addEnchantment(Enchantment.DAMAGE_ALL, 4);
+    ItemMeta s2im = s2.getItemMeta();
+    s2im.setLore(Arrays.asList(new String[] { "Â§6Espada del sobreviviente extremo! Â§rÂ§4Â§oLevel 1" }));
+    s2im.setDisplayName("Â§cPremio de Evento SE");
+    s2.setItemMeta(s2im);
+    
+    ItemStack s3 = new ItemStack(Material.DIAMOND_SWORD);
+    s3.addEnchantment(Enchantment.KNOCKBACK, 2);
+    s3.addEnchantment(Enchantment.FIRE_ASPECT, 2);
+    s3.addEnchantment(Enchantment.DAMAGE_ALL, 5);
+    ItemMeta s3im = s3.getItemMeta();
+    s3im.setLore(Arrays.asList(new String[] { "Â§6Espada del perseverante! Â§rÂ§4Â§oLevel 3" }));
+    s3im.setDisplayName("Â§cPremio Laberinto");
+    s3.setItemMeta(s3im);
+    
+    ShapedRecipe s1r = new ShapedRecipe(s1).shape(new String[] { "sis", "sis", "sis" }).setIngredient('i', Material.IRON_SWORD).setIngredient('s', Material.SPONGE);
+    getServer().addRecipe(s1r);
+    ShapedRecipe s2r = new ShapedRecipe(s2).shape(new String[] { "sgs", "sgs", "sgs" }).setIngredient('g', Material.GOLD_SWORD).setIngredient('s', Material.SPONGE);
+    getServer().addRecipe(s2r);
+    ShapedRecipe s3r = new ShapedRecipe(s3).shape(new String[] { "sds", "sds", "sds" }).setIngredient('d', Material.DIAMOND_SWORD).setIngredient('s', Material.SPONGE);
+    getServer().addRecipe(s3r);
+    ShapedRecipe repEnderBow = new ShapedRecipe(enderBow).shape(new String[] { "ses", "sbs", "ses" }).setIngredient('e', Material.ENDER_PEARL).setIngredient('b', Material.BOW).setIngredient('s', Material.BOW);
+    getServer().addRecipe(repEnderBow);
+    ShapedRecipe repWitherBow = new ShapedRecipe(witherBow).shape(new String[] { "sts", "sbs", "sts" }).setIngredient('t', Material.TNT).setIngredient('b', Material.BOW).setIngredient('s', Material.BOW);
+    getServer().addRecipe(repWitherBow);
+    getLogger().info("This plugin is copyright 2013 Agubi-Chebi Project");
+  }
+  public void onDisable() {
+    getLogger().info("Gracias por usar el plugin para Eventos!");
+  }
+  
+  @EventHandler  
+  public void onShoot(ProjectileLaunchEvent event)
+  {
+    try {
+      if ((event.getEntity() instanceof Arrow)) {
+        Arrow arrow = (Arrow)event.getEntity();
+        if ((arrow.getShooter() instanceof Player)) {
+          Player shooter = (Player)arrow.getShooter();
+          if ((shooter.getItemInHand().getType() == Material.BOW) && (((String)shooter.getItemInHand().getItemMeta().getLore().get(0)).equals("Enderball"))) {
+            event.setCancelled(true);
+            ((EnderPearl)shooter.launchProjectile(EnderPearl.class)).setVelocity(arrow.getVelocity());
+          }
+        }
+      }
+    } catch (Exception localException) {  }
+    
+  }
+  
+  @EventHandler
+    public void playerFireBow(EntityShootBowEvent e) { if ((e.getEntity() instanceof Player)) {
+      Player shooter = (Player)e.getEntity();
+      if ((shooter.getItemInHand().getType() == Material.BOW) && (((String)shooter.getItemInHand().getItemMeta().getLore().get(0)).equals("TNT"))) {
+        Entity en = shooter.getWorld().spawnEntity(e.getProjectile().getLocation(), EntityType.PRIMED_TNT);
+        en.setVelocity(e.getProjectile().getVelocity());
+        e.getProjectile().remove();
+      }
+    }
+  }
+}
